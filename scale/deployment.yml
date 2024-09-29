@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+  labels:
+    app.kubernetes.io/name: viblo-k8s-hpa
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp
+          image: maitrungduc1410/viblo-k8s-hpa:latest
+          ports:
+            - containerPort: 3000
+              name: pod-http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "128m"
+            limits:
+              memory: "300Mi"
+              cpu: "250m"

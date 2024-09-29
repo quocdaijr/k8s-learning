@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-healthcheck
+spec:
+  selector:
+    matchLabels:
+      app: demo-healthcheck
+  template:
+    metadata:
+      labels:
+        app: demo-healthcheck
+    spec:
+      containers:
+        - name: myapp
+          image: maitrungduc1410/viblo-k8s-healthcheck
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: myport
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: myport
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 1
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: myport
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: myport
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 1
+            successThreshold: 3

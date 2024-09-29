@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app.kubernetes.io/name: viblo-image-server-backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      volumes:
+        - name: images
+          persistentVolumeClaim:
+            claimName: backend
+      containers:
+        - name: my-backend
+          image: quocdaijr/k8s-learning-backend:latest
+          ports:
+            - containerPort: 3000
+              name: pod-http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "64m"
+            limits:
+              memory: "750Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: images
+              mountPath: /app/public/images

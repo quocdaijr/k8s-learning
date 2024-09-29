@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imgproxy
+  labels:
+    app.kubernetes.io/name: viblo-image-server-imgproxy
+spec:
+  selector:
+    matchLabels:
+      app: imgproxy
+  template:
+    metadata:
+      labels:
+        app: imgproxy
+    spec:
+      containers:
+        - name: my-imgproxy
+          image: darthsim/imgproxy:latest
+          ports:
+            - containerPort: 8080
+              name: pod-http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "64m"
+            limits:
+              memory: "500Mi"
+              cpu: "200m"

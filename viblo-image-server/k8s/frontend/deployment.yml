@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app.kubernetes.io/name: viblo-image-server-frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: frontend
+            items:
+              - key: app.nginx.config
+                path: app.nginx.config
+      containers:
+        - name: my-frontend
+          image: quocdaijr/k8s-learning-frontend:latest
+          ports:
+            - containerPort: 80
+              name: pod-http
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "64m"
+            limits:
+              memory: "500Mi"
+              cpu: "250m"
+          volumeMounts:
+            - name: nginx-config
+              mountPath: "/etc/nginx/conf.d/default.conf"
+              subPath: app.nginx.config
+              readOnly: true
